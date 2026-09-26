@@ -92,7 +92,25 @@ async def part4_attacks():
     from attacks.attacks import run_attacks, save_attack_results
 
     red_default, red_default_runner = create_red_agent_default()
-    await test_agent(red_default, red_default_runner)
+    # Smoke test dùng chat_with_retry để 503 "high demand" được thử lại thay vì
+    # bị bỏ qua ngay; nhưng nó KHÔNG được phép giết cả lần chạy — nếu provider
+    # lỗi hẳn (hết quota, hết credit) thì vẫn chạy tiếp attack để còn sinh
+    # được JSON trong outputs/.
+    from attacks.attacks import chat_with_retry, is_fatal_quota_error
+
+    try:
+        await chat_with_retry(
+            red_default, red_default_runner, "What is the 12-month savings rate?"
+        )
+        print("Smoke test Red OK")
+    except Exception as exc:  # noqa: BLE001 — báo lỗi rồi đi tiếp
+        if is_fatal_quota_error(exc):
+            print("! Smoke test Red bỏ qua: hết hạn mức provider (xem thông báo trên).")
+        else:
+            print(
+                f"! Smoke test Red bỏ qua: provider không sẵn sàng "
+                f"({type(exc).__name__}: {str(exc)[:120]})"
+            )
 
     print("\n--- Attacks on Red ---")
     unsafe_results = await run_attacks(

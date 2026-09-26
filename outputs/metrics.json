@@ -1,0 +1,16 @@
+{
+  "total_requests": 38,
+  "blocked_requests": 19,
+  "block_rate": 0.5,
+  "rate_limit_hits": 5,
+  "judge_checks": 0,
+  "judge_fails": 0,
+  "judge_fail_rate": 0.0,
+  "alerts": [],
+  "exported_at": "2026-09-26T08:56:17.012379+00:00",
+  "thresholds": {
+    "block_rate": 0.5,
+    "rate_limit_hits": 5,
+    "judge_fail_rate": 0.3
+  }
+}
